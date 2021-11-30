@@ -9,19 +9,19 @@
 #include "display.h"
 
 typedef struct {
-    float    voltage;   /* AD result of measured voltage */
-    float    current;   /* AD result of measured current */
-    int counter;   /* A counter value               */
+    float    temperature;   /* AD result of measured temperature  */
+    float    lightLevel;    /* AD result of measured lightLevel   */
+    int counter;            /* A counter value                    */
 } message_t;
 
 static MemoryPool<message_t, 32> mpool;
 static Queue<message_t, 32> queue;
 
-void displaySendUpdateSensor(float volts, float amps, int cycles) {
+void displaySendUpdateSensor(float temperature, float lightLevel, int cycles) {
     message_t *message = mpool.try_alloc();
     if(message) {
-        message->voltage =  volts;
-        message->current = amps;
+        message->temperature =  temperature;
+        message->lightLevel = lightLevel;
         message->counter = cycles;
         queue.try_put(message);
     }
@@ -31,27 +31,20 @@ void displayThread(void)
 {
     cout << "\033c" << "\033[?25l" << endl;
     std::cout << "\033[H" 
-         << "Voltage:                    V\r\n"
-         << "Current:                    A\r\n"
-         << "Number of cycles\r\n";
+         << "Temperature:               C\r\n"
+         << "Light Level:               \%\r\n"
+         << "Number of Cycles\r\n";
     while (true) {
         message_t *message;
-    //    osEvent evt;
       auto event = queue.try_get(&message);
       if (event) {
-//        message_t *message = (message_t *)evt.value.p;
-        std::cout << "\033[1;21H" << std::fixed << std::setw(8)
-                  << std::setprecision(2) << (message->voltage); //<< "V\r\n" ;
-        //            printf("\nVoltage: %.2f V\n\r", message->voltage);
-        std::cout << "\033[2;21H" << std::fixed << std::setw(8)
-                  << std::setprecision(2) << (message->current); // << "A\r\n" ;
-        //            printf("Current: %.2f A\n\r", message->current);
-        std::cout << "\033[3;18H"
-                  << /*std::dec << */ std::setw(8)
-                  //<< std::showbase //<< std::setfill( '0' )
+        std::cout << "\033[1;21H" << std::fixed << std::setw(6)
+                  << std::setprecision(1) << (message->temperature);
+        std::cout << "\033[2;21H" << std::fixed << std::setw(6)
+                  << std::setprecision(1) << (message->lightLevel);
+        std::cout << "\033[3;19H"
+                  << std::setw(6)
                   << (message->counter) << std::endl;
-        //            printf("Number of cycles: %u\n\r", message->counter);
-
         mpool.free(message);
         }
     }

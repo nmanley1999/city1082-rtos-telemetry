@@ -1,16 +1,16 @@
 #include "mbed.h"
 #include "display.h"
+#include <cmath>
 
 /* Send Thread */
 
 typedef struct {
-    float    voltage;   /* AD result of measured voltage */
-    float    current;   /* AD result of measured current */
-    int counter;   /* A counter value               */
+    float    temperature;  /* AD result of measured voltage */
+    float    lightLevel;   /* AD result of measured current */
+    int      cycles;       /* A counter value               */
 } message_t;
 
 static  MemoryPool<message_t, 16> mpool;
-static Queue<message_t, 32> queue;
 
 
 void sendThread(void)
@@ -19,10 +19,10 @@ void sendThread(void)
     while (true) {
         i++; // fake data update
         message_t *message = mpool.try_alloc();
-        message->voltage = (i * 0.1) * 33;
-        message->current = (i * 0.1) * 11;
-        message->counter = i;
-        displaySendUpdateSensor(message->voltage, message->current, message->counter);
+        message->temperature = fmod((i * 0.1f) * 33.0f, 40.0f);
+        message->lightLevel = fmod((i * 0.1f) * 11.0f, 100);
+        message->cycles = i;
+        displaySendUpdateSensor(message->temperature, message->lightLevel, message->cycles);
         mpool.free(message);
         ThisThread::sleep_for(1s);
     }

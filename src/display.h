@@ -2,5 +2,5 @@
 #define DISPLAY_H
 
 void displayThread();
-void displaySendUpdateSensor(float voltage, float current, int counter);
+void displaySendUpdateSensor(float, float, int);
 #endif

@@ -18,12 +18,12 @@ void sendThread(void)
     uint32_t i = 0;
     while (true) {
         i++; // fake data update
-        message_t *message = mpool.alloc();
+        message_t *message = mpool.try_alloc();
         message->voltage = (i * 0.1) * 33;
         message->current = (i * 0.1) * 11;
         message->counter = i;
         displaySendUpdateSensor(message->voltage, message->current, message->counter);
         mpool.free(message);
-        ThisThread::sleep_for(1000);
+        ThisThread::sleep_for(1s);
     }
 }

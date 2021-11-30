@@ -44,8 +44,8 @@ void displayThread(void)
             std::cout << "\033[2;21H" << std::fixed << std::setw( 8 ) << std::setprecision( 2) 
                  << (message -> current); // << "A\r\n" ;
 //            printf("Current: %.2f A\n\r", message->current);
-            std::cout << "\033[3;18H" << std::hex << std::setw( 8 ) 
-                 << std::showbase //<< std::setfill( '0' ) 
+            std::cout << "\033[3;18H" <</*std::dec << */ std::setw( 8 ) 
+                 //<< std::showbase //<< std::setfill( '0' ) 
                  << (message -> counter) << std::endl ;
 //            printf("Number of cycles: %u\n\r", message->counter);
 

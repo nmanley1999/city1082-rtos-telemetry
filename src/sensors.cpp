@@ -6,7 +6,24 @@
 #define THERM_VCC P10_3
 #define THERM_OUT P10_1
 
+
+/* Reference resistor in series with the thermistor is of 10kohm */
+#define R_REFERENCE                 (float)(10000)
+
+/* A constant of NCP18XH10F03RB thermistor is */
+#define A_COEFF                     (float)(0.000932679f)
+/* A constant of NCP18XH10F03RB thermistor is */
+#define B_COEFF                     (float)(0.000248772f)
+/* A constant of NCP18XH10F03RB thermistor is */
+#define C_COEFF                     (float)(0.0000002041094f)
+
+/* Zero Kelvin in degree C */
+#define ABSOLUTE_ZERO
+
+
+AnalogIn tempVoltage(THERM_OUT);
 /* Send Thread */
+float readTEmp();
 
 void sendThread(void)
 {
@@ -31,4 +48,11 @@ void sendThread(void)
         ThisThread::sleep_for(1s);
         
     }
+}
+
+float readTemp () {
+    float temperature;
+    float voltRead = tempVoltage.read() * 2.4;
+    float refCurrent = voltage
+return temperature;
 }

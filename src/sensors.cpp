@@ -53,6 +53,11 @@ void sendThread(void)
 float readTemp () {
     float temperature;
     float voltRead = tempVoltage.read() * 2.4;
-    float refCurrent = voltage
-return temperature;
+    float refCurrent = voltage/R_REFERENCE;
+    float resTherm = (3.3f - voltRead) / refCurrent;
+    float lnRt = log(resTherm);
+    float stEqn = A_COEFF + B_COEFF*lnRt + C_COEFF*powe(lnRt, 3);
+    temperature = (1/stEqn) + ABSOLUTE_ZERO +0.05
+
+    return temperature;
 }
